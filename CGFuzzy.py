@@ -75,9 +75,3 @@ def predict(df, model, graph, max_lags, target, partitioners):
     return forecasts
 
 
-
-        forecasts.append(forecast)
-
-      forecasts_all[var] = forecasts
-
-  return pd.DataFrame(forecasts_all)

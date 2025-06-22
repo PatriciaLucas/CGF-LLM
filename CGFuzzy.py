@@ -20,21 +20,11 @@ def fuzzyfy(df, partitioner = 'Grid', npart = 30):
 
   return ts_fuzzy, fs
 
-def CGFuzzy(df, ts_fuzzy, target):
+def fit(df, ts_fuzzy, target, max_lags):
   graph = feature_selection.causal_graph(df.head(2000), target=target, max_lags=max_lags)[target]
   antecedent, consequent = util.organize_dataset(ts_fuzzy, graph, max_lags, target)
 
   return [antecedent, consequent], graph
-
-def MCGFuzzy(df, ts_fuzzy):
-  graph = feature_selection.causal_graph(df.head(2000), target="", max_lags=max_lags)
-  print(graph.keys())
-  model = {}
-  for v in graph.keys():
-    antecedent, consequent = util.organize_dataset(ts_fuzzy, graph[v], max_lags, target)
-    model[v] = [antecedent, consequent]
-
-  return model, graph
 
 def calculate_weights(df):
     contagem = df.value_counts().reset_index()
@@ -84,47 +74,7 @@ def predict(df, model, graph, max_lags, target, partitioners):
 
     return forecasts
 
-def predict_multivariate(df, model, graph, max_lags, partitioners):
-  forecasts_all = {}
 
-  for var in graph.keys():
-      input =  util.organize_dataset(test_dataset, graph[var], max_lags, var)[0]
-      forecasts = []
-      m = False
-      for row in range(input.shape[0]):
-
-        forecast_fuzzy = []
-        for v in range(len(input.columns)):
-            min = partitioners[input.columns[v]][0].min
-            max = partitioners[input.columns[v]][0].max
-            forecast_fuzzy.append(partitioners[input.columns[v]][0].fuzzyfy(data=float(input.iloc[row, v]), method='maximum', mode='sets'))
-
-
-        # print(forecast_fuzzy)
-        if not isinstance(forecast_fuzzy, pd.Series):
-              linha = pd.Series(forecast_fuzzy, index=input.columns)
-
-        centers, partlen = np.linspace(partitioners[var][0].min, partitioners[var][0].max, partitioners[var][0].partitions, retstep=True)
-
-        equal = model[var][0].eq(linha).all(axis=1)
-
-        if not equal.any():
-          linha = model[var][0].iloc[-1]
-          equal = model[var][0].eq(linha).all(axis=1)
-          m = False
-
-        sets_predict = calculate_weights(model[var][1][equal])
-
-        weights_list = []
-        center_list = []
-        for index, sets in sets_predict.iterrows():
-            idx_center = int(sets['sets'][1:])
-            weights = sets['weights']
-            center_list.append(float(centers[idx_center]) * weights)
-            weights_list.append(weights)
-
-
-        forecast = float(np.sum(center_list) / np.sum(weights_list))
 
         forecasts.append(forecast)
 

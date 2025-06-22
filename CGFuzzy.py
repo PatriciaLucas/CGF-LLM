@@ -20,7 +20,7 @@ def fuzzyfy(df, partitioner = 'Grid', npart = 30):
 
   return ts_fuzzy, fs
 
-def CGFuzzy(df, ts_fuzzy):
+def CGFuzzy(df, ts_fuzzy, target):
   graph = feature_selection.causal_graph(df.head(2000), target=target, max_lags=max_lags)[target]
   antecedent, consequent = util.organize_dataset(ts_fuzzy, graph, max_lags, target)
 

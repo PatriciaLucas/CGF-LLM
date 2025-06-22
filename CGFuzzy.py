@@ -32,7 +32,7 @@ def calculate_weights(df):
     return contagem
 
 def predict(df, model, graph, max_lags, target, partitioners):
-    input =  util.organize_dataset(test_dataset, graph, max_lags, target)[0]
+    input =  util.organize_dataset(df, graph, max_lags, target)[0]
     forecasts = []
     m = False
     for row in range(input.shape[0]):

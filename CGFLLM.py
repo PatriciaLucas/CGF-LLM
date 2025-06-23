@@ -223,7 +223,7 @@ class GPT2Forecaster(nn.Module):
         
         return {"loss" : loss, "logits" : output.squeeze(0)}
 
-def train_model(train_dataset, name_model, epochs, scaler, freeze, output_size, path_model = None):
+def train_model(train_dataset, name_model, epochs, scaler, output_size, freeze, path_model = None):
     from transformers import TrainingArguments, Trainer
     import torch
 

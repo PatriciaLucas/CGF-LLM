@@ -45,7 +45,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
         labels_scaled = np.hstack((labels_scaled, scaler[v].fit_transform(y.reshape(-1, 1))))
       arr = False
 
-    inputs = fcllm.create_sequences_input(X, y, tokenizer)
+    inputs = create_sequences_input(X, y, tokenizer)
 
     # Tokenization
     tokenizer.pad_token = tokenizer.eos_token
@@ -60,7 +60,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
 
     #input_tokens = tokenizer(inputs, padding_side = 'left', padding=True, return_tensors="pt")
 
-    return fcllm.custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
 
 def text(df, name_dataset, target, max_lags, tokenizer):
     variables = df.columns.tolist()
@@ -85,7 +85,7 @@ def text(df, name_dataset, target, max_lags, tokenizer):
         labels_scaled = np.hstack((labels_scaled, scaler[v].fit_transform(y.reshape(-1, 1))))
       arr = False
 
-    inputs = fcllm.create_sequences_input(X_list, y_list, tokenizer)
+    inputs = create_sequences_input(X_list, y_list, tokenizer)
 
     # Tokenization
     tokenizer.pad_token = tokenizer.eos_token
@@ -99,7 +99,7 @@ def text(df, name_dataset, target, max_lags, tokenizer):
     return_tensors="pt"
     )
 
-    return fcllm.custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
 
 
 def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
@@ -110,7 +110,7 @@ def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
     # Fuzzification of time series
     data_fuzzy = pd.DataFrame(columns=variables)
     for v in variables:
-        dict_variables[v] = fcllm.fuzzification(pd.DataFrame(df[v]), name_dataset, v, partitions, None)
+        dict_variables[v] = fuzzification(pd.DataFrame(df[v]), name_dataset, v, partitions, None)
         data_fuzzy[v] = dict_variables[v][0]
 
     # Causal graph generation
@@ -151,7 +151,7 @@ def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
 
     #input_tokens = tokenizer(inputs, padding_side = 'left', padding=True, return_tensors="pt")
 
-    return fcllm.custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
 def create_sequences_input(X_list, y_list, tokenizer):
   sequences = []

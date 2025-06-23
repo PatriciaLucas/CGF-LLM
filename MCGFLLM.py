@@ -19,6 +19,43 @@ from clshq_tk.modules.fuzzy import GridPartitioner, trimf, gaussmf, training_loo
 from clshq_tk.data.regression import RegressionTS
 from clshq_tk.common import DEVICE, DEFAULT_PATH, resume, checkpoint, order_window
 
+class custom_Dataset(Dataset):
+    def __init__(self, input_ids, attention_mask, labels):
+        self.input_ids = input_ids
+        self.attention_mask = attention_mask
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        #torch.cat((self.input_ids[idx], self.labels[idx]),axis=0)
+        return {
+            'input_ids': self.input_ids[idx],
+            'attention_mask': self.attention_mask[idx],
+            'labels': torch.Tensor(self.labels[idx])
+        }
+
+    def __len__(self):
+        return len(self.input_ids)
+
+def fuzzification(df, name_dataset, letter, partitions, partitioner = None):
+
+    if partitioner is None:
+
+        ts = RegressionTS(name_dataset, 2000, df.values, order = 1, step_ahead = 0, dtype=torch.float64)
+
+        partitioner = GridPartitioner(trimf, partitions, ts.num_attributes, device = DEVICE, dtype = ts.dtype,
+                                    var_names = [letter])
+    else:
+        ts = ts
+        partitioner = partitioner
+
+    training_loop(partitioner, ts)
+
+    out = partitioner.forward(ts.y.to(device=DEVICE), mode = 'one-hot')
+
+    ts_fuzzy = np.array(partitioner.from_membership_to_linguistic(out)).squeeze()
+
+    return pd.DataFrame(ts_fuzzy), ts.y, partitioner
+
 
 def causal_text(df, name_dataset, target, max_lags, tokenizer):
 

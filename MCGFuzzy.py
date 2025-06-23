@@ -42,7 +42,7 @@ def predict(df, model, graph, max_lags, partitioners):
   forecasts_all = {}
 
   for var in graph.keys():
-      input =  util.organize_dataset(test_dataset, graph[var], max_lags, var)[0]
+      input =  util.organize_dataset(df, graph[var], max_lags, var)[0]
       forecasts = []
       m = False
       for row in range(input.shape[0]):

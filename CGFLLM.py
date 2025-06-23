@@ -97,10 +97,10 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
     truncation=True,
     max_length=1024,
     return_tensors="pt"
-)
+    )
     #input_tokens = tokenizer(inputs, padding_side = 'left', padding=True, return_tensors="pt")
     
-    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
 def text(df, name_dataset, target, max_lags, tokenizer):
 
@@ -125,9 +125,9 @@ def text(df, name_dataset, target, max_lags, tokenizer):
     truncation=True,
     max_length=1024,
     return_tensors="pt"
-)
+    )
     
-    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
 
 def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
@@ -161,10 +161,10 @@ def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
     truncation=True,
     max_length=1024,
     return_tensors="pt"
-)
+    )
     #input_tokens = tokenizer(inputs, padding_side = 'left', padding=True, return_tensors="pt")
     
-    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
 class AttentionPooling(nn.Module):
     def __init__(self, embed_dim):

@@ -36,8 +36,6 @@ def calculate_weights(df):
     contagem.columns = ['sets', 'weights']
     return contagem
 
-
-
 def predict(df, model, graph, max_lags, partitioners):
   forecasts_all = {}
 
@@ -79,3 +77,9 @@ def predict(df, model, graph, max_lags, partitioners):
 
 
         forecast = float(np.sum(center_list) / np.sum(weights_list))
+
+        forecasts.append(forecast)
+
+      forecasts_all[var] = forecasts
+
+  return pd.DataFrame(forecasts_all)

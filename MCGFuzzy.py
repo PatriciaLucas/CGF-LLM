@@ -23,7 +23,6 @@ def fuzzyfy(df, partitioner = 'Grid', npart = 30):
 
 def fit(df, ts_fuzzy, target, max_lags):
   graph = feature_selection.causal_graph(df.head(2000), target="", max_lags=max_lags)
-  print(graph.keys())
   model = {}
   for v in graph.keys():
     antecedent, consequent = util.organize_dataset(ts_fuzzy, graph[v], max_lags, target)

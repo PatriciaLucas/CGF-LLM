@@ -223,12 +223,12 @@ class GPT2Forecaster(nn.Module):
         
         return {"loss" : loss, "logits" : output.squeeze(0)}
 
-def train_model(train_dataset, name_model, epochs, scaler, freeze, path_model = None):
+def train_model(train_dataset, name_model, epochs, scaler, freeze, output_size, path_model = None):
     from transformers import TrainingArguments, Trainer
     import torch
 
     # Model
-    model = GPT2Forecaster(scaler=scaler, freeze=freeze)
+    model = GPT2Forecaster(scaler=scaler, output_size=output_size, freeze=freeze)
 
     # Enable gradient checkpointing on internal GPT2 model only
     if hasattr(model.gpt2, "gradient_checkpointing_enable"):

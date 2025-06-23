@@ -178,11 +178,15 @@ class AttentionPooling(nn.Module):
         return pooled
 
 class GPT2Forecaster(nn.Module):
-    def __init__(self, scaler, output_size=1, hidden_dims=[128, 64]):
+    def __init__(self, scaler, output_size, freeze, hidden_dims=[128, 64]):
         super().__init__()
         config = GPT2Config()
         self.gpt2 = GPT2Model(config)
+        self.freeze = freeze
+        if self.freeze:
+            self.gpt2.requires_grad_(False)  # Freeze GPT-2 weights
         self.scaler = scaler
+        self.output_size = output_size
 
         # Attention-based pooling over the hidden states
         self.attn_pool = AttentionPooling(config.n_embd)
@@ -219,12 +223,12 @@ class GPT2Forecaster(nn.Module):
         
         return {"loss" : loss, "logits" : output.squeeze(0)}
 
-def train_model(train_dataset, name_model, epochs, scaler, path_model = None):
+def train_model(train_dataset, name_model, epochs, scaler, freeze, path_model = None):
     from transformers import TrainingArguments, Trainer
     import torch
 
     # Model
-    model = GPT2Forecaster(scaler=scaler)
+    model = GPT2Forecaster(scaler=scaler, freeze=freeze)
 
     # Enable gradient checkpointing on internal GPT2 model only
     if hasattr(model.gpt2, "gradient_checkpointing_enable"):

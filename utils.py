@@ -110,7 +110,13 @@ def get_metrics_multivariate(database_path):
 
     return avg_rmse
 
+def get_sizes(database_size_path):
+  query = "SELECT * FROM results"
+  db = pd.DataFrame(utils.execute(query, database_size_path), columns=['name_dataset', 'window', 'total_chars', 'train_token_count', 'test_token_count', 'train_char_count', 'test_char_count'])
+  cols = ['total_chars', 'train_token_count', 'test_token_count', 'train_char_count', 'test_char_count']
+  avg_sizes = db.groupby('name_dataset')[cols].mean().reset_index()
 
+  return avg_sizes
 
 def calculate_train_test_sizes(ds, seq, tokenizer):
     # Token size (total and average, with and without padding)

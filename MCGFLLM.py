@@ -97,7 +97,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
 
     #input_tokens = tokenizer(inputs, padding_side = 'left', padding=True, return_tensors="pt")
 
-    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
+    return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
 def text(df, name_dataset, target, max_lags, tokenizer):
     variables = df.columns.tolist()

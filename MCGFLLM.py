@@ -82,7 +82,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
         labels_scaled = np.hstack((labels_scaled, scaler[v].fit_transform(y.reshape(-1, 1))))
       arr = False
 
-    inputs = create_sequences_input(X, y, tokenizer)
+    inputs = create_sequences_input(X_list, y, tokenizer)
 
     # Tokenization
     tokenizer.pad_token = tokenizer.eos_token

@@ -4,6 +4,23 @@ import sqlite3
 import contextlib
 import torch
 
+def get_dataset(name):
+    
+    if name == 'SONDA':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/SONDA.csv', index_col=('Date'))
+    elif name == 'WEC':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/WEC.csv', index_col=('Date'))
+    elif name == 'DEC':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/DEC.csv', index_col=('Date'))
+    elif name == 'AQ':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/AQ.csv', index_col=('Date'))
+    elif name == 'WTH':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/WTH.csv', index_col=('date'))
+    elif name == 'ETT':
+        return pd.read_csv('https://raw.githubusercontent.com/FutureLab-DCC/CGF-LLM/refs/heads/main/datasets/ETT.csv', index_col=('date'))
+    else:
+        return "There is no dataset with that name."
+
 
 def execute_insert(sql,data,database_path):
     """

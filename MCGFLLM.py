@@ -71,7 +71,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
     for v in variables:
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
       X_list.append(X)
-      y = df[v][1].squeeze().tolist()[max_lags:]
+      y = df[v].squeeze().tolist()[max_lags:]
       y = np.asarray(y)
       y_list.append(y)
 
@@ -111,7 +111,7 @@ def text(df, name_dataset, target, max_lags, tokenizer):
     for v in variables:
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
       X_list.append(X)
-      y = df[v][1].squeeze().tolist()[max_lags:]
+      y = df[v].squeeze().tolist()[max_lags:]
       y = np.asarray(y)
       y_list.append(y)
 

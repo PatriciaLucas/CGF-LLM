@@ -68,7 +68,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
     X_list, y_list = [], []
     graph = feature_selection.causal_graph(df.head(2000), target=target, max_lags=max_lags)
     arr = True
-    for v in variables:
+    for v in graph.keys():
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
       X_list.append(X)
       y = df[v].squeeze().tolist()[max_lags:]
@@ -108,7 +108,7 @@ def text(df, name_dataset, target, max_lags, tokenizer):
     # Complete graph generation
     graph = feature_selection.complete_graph(df.head(2000), target=target, max_lags=max_lags)
     arr = True
-    for v in variables:
+    for v in graph.keys():
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
       X_list.append(X)
       y = df[v].squeeze().tolist()[max_lags:]
@@ -157,7 +157,7 @@ def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
     X_list, y_list = [], []
     graph = feature_selection.causal_graph(df.head(2000), target=target, max_lags=max_lags)
     arr = True
-    for v in variables:
+    for v in graph.keys():
       X, y_hat = util.organize_dataset(data_fuzzy, graph[v], max_lags, v)
       X_list.append(X)
       y = dict_variables[v][1].squeeze().tolist()[max_lags:]

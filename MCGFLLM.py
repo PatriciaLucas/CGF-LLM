@@ -80,7 +80,7 @@ def causal_graph(dataset, max_lags):
         
     return G_list
 
-def complete_graph(dataset, target, max_lags):
+def complete_graph(dataset, max_lags):
 
     G_list = dict.fromkeys(list(dataset.columns.values), {})
     

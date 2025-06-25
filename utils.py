@@ -104,9 +104,9 @@ def rolling_window(df, n_windows):
 def get_metrics_multivariate(database_path):
     import statistics
     
-    model = pd.DataFrame(utils.execute("SELECT model FROM results", database_path), columns=['model'])['model'].unique().tolist()
-    datasets = pd.DataFrame(utils.execute("SELECT name_dataset FROM results", database_path), columns=['name_dataset'])['name_dataset'].unique().tolist()
-    windows = pd.DataFrame(utils.execute("SELECT window FROM results", database_path), columns=['window'])['window'].unique().tolist()
+    model = pd.DataFrame(execute("SELECT model FROM results", database_path), columns=['model'])['model'].unique().tolist()
+    datasets = pd.DataFrame(execute("SELECT name_dataset FROM results", database_path), columns=['name_dataset'])['name_dataset'].unique().tolist()
+    windows = pd.DataFrame(execute("SELECT window FROM results", database_path), columns=['window'])['window'].unique().tolist()
     
     nrmse_rows = []
     for m in model:
@@ -115,7 +115,7 @@ def get_metrics_multivariate(database_path):
             for w in windows:
             # try:
               query = "SELECT * FROM results WHERE model=='"+m+"' and name_dataset=='"+d+"' and window=="+str(w)
-              results = pd.DataFrame(utils.execute(query, database_path), columns=['model', 'name_dataset', 'window', 'variable', 'forecasts', 'real'])
+              results = pd.DataFrame(execute(query, database_path), columns=['model', 'name_dataset', 'window', 'variable', 'forecasts', 'real'])
     
               variables = results['variable'].unique()
     

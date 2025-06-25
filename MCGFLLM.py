@@ -211,7 +211,7 @@ def text(df, name_dataset, max_lags, tokenizer):
     return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs
 
 
-def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
+def fuzzy_causal(df, name_dataset, max_lags, tokenizer, partitions):
 
     variables = df.columns.tolist()
     dict_variables = dict.fromkeys(variables)

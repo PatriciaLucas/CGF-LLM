@@ -52,35 +52,38 @@ def execute(sql, database_path):
 def get_metrics(database_path):
     import statistics
 
+    model = pd.DataFrame(execute("SELECT model FROM results", database_path), columns=['model'])['model'].unique().tolist()
     datasets = pd.DataFrame(execute("SELECT name_dataset FROM results", database_path), columns=['name_dataset'])['name_dataset'].unique().tolist()
     windows = pd.DataFrame(execute("SELECT window FROM results", database_path), columns=['window'])['window'].unique().tolist()
 
     results_datasets = []
-    for d in datasets:
-        mae = []
-        rmse = []
-        nrmse = []
-        for w in windows:
-          try:
-              query = "SELECT * FROM results WHERE name_dataset=='"+d+"' and window=="+str(w)
-              results = pd.DataFrame(execute(query, database_path), columns=['name_dataset', 'window', 'forecasts', 'real'])
+    for m in model:
+        for d in datasets:
+            mae = []
+            rmse = []
+            nrmse = []
+            for w in windows:
+              try:
+                  query = "SELECT * FROM results WHERE model=='"+m+"' and name_dataset=='"+d+"' and window=="+str(w)
+                  results = pd.DataFrame(execute(query, database_path), columns=['model', 'name_dataset', 'window', 'forecasts', 'real'])
+                  
+                  rmse.append(np.sqrt(np.mean((np.array(results['forecasts'].values) - np.array(results['real'].values)) ** 2)))
+                  maxmin = max(results['real'].values) - min(results['real'].values)
+                  nrmse.append(np.sqrt(np.mean((np.array(results['forecasts'].values) - np.array(results['real'].values)) ** 2))/maxmin)
+              except:
+                  pass
 
-              rmse.append(np.sqrt(np.mean((np.array(results['forecasts'].values) - np.array(results['real'].values)) ** 2)))
-              maxmin = max(results['real'].values) - min(results['real'].values)
-              nrmse.append(np.sqrt(np.mean((np.array(results['forecasts'].values) - np.array(results['real'].values)) ** 2))/maxmin)
-          except:
-              pass
-
-        avg_nrmse = statistics.mean(nrmse)
-        std_nrmse = statistics.stdev(nrmse)
-
-        df_resultados = pd.DataFrame([{
-            "Dataset": d,
-            "AVG NRMSE": avg_nrmse,
-            "STD NRMSE": std_nrmse,
-        }])
-
-        results_datasets.append(df_resultados)
+            avg_nrmse = statistics.mean(nrmse)
+            std_nrmse = statistics.stdev(nrmse)
+    
+            df_resultados = pd.DataFrame([{
+                "Model": m,
+                "Dataset": d,
+                "AVG NRMSE": avg_nrmse,
+                "STD NRMSE": std_nrmse,
+            }])
+    
+            results_datasets.append(df_resultados)
 
     return results_datasets
 
@@ -100,38 +103,39 @@ def rolling_window(df, n_windows):
 
 def get_metrics_multivariate(database_path):
     import statistics
-
-    datasets = pd.DataFrame(execute("SELECT name_dataset FROM results", database_path), columns=['name_dataset'])['name_dataset'].unique().tolist()
-    windows = pd.DataFrame(execute("SELECT window FROM results", database_path), columns=['window'])['window'].unique().tolist()
-
+    
+    model = pd.DataFrame(utils.execute("SELECT model FROM results", database_path), columns=['model'])['model'].unique().tolist()
+    datasets = pd.DataFrame(utils.execute("SELECT name_dataset FROM results", database_path), columns=['name_dataset'])['name_dataset'].unique().tolist()
+    windows = pd.DataFrame(utils.execute("SELECT window FROM results", database_path), columns=['window'])['window'].unique().tolist()
+    
     nrmse_rows = []
-    # nrmse_df_all = pd.DataFrame(columns=['name_dataset','window','variable','nrmse'])
-    for d in datasets:
+    for m in model:
+        for d in datasets:
+    
+            for w in windows:
+            # try:
+              query = "SELECT * FROM results WHERE model=='"+m+"' and name_dataset=='"+d+"' and window=="+str(w)
+              results = pd.DataFrame(utils.execute(query, database_path), columns=['model', 'name_dataset', 'window', 'variable', 'forecasts', 'real'])
+    
+              variables = results['variable'].unique()
+    
+              for v in variables:
+                results_variable = results[results['variable'] == v]
+                rmse = np.sqrt(np.mean((np.array(results_variable['forecasts'].values) - np.array(results_variable['real'].values)) ** 2))
+                maxmin = max(results_variable['real'].values) - min(results_variable['real'].values)
+                nrmse = np.sqrt(np.mean((np.array(results_variable['forecasts'].values) - np.array(results_variable['real'].values)) ** 2))/maxmin
+                nrmse_rows.append([m, d, w, v, nrmse])
+    nrmse_df_all = pd.DataFrame(nrmse_rows, columns=['model', 'name_dataset', 'window', 'variable', 'nrmse'])
 
-        for w in windows:
-        # try:
-          query = "SELECT * FROM results WHERE name_dataset=='"+d+"' and window=="+str(w)
-          results = pd.DataFrame(execute(query, database_path), columns=['name_dataset', 'window', 'variable', 'forecasts', 'real'])
-
-          variables = results['variable'].unique()
-
-          for v in variables:
-            results_variable = results[results['variable'] == v]
-            rmse = np.sqrt(np.mean((np.array(results_variable['forecasts'].values) - np.array(results_variable['real'].values)) ** 2))
-            maxmin = max(results_variable['real'].values) - min(results_variable['real'].values)
-            nrmse = np.sqrt(np.mean((np.array(results_variable['forecasts'].values) - np.array(results_variable['real'].values)) ** 2))/maxmin
-            nrmse_rows.append([d, w, v, nrmse])
-    nrmse_df_all = pd.DataFrame(nrmse_rows, columns=['name_dataset', 'window', 'variable', 'nrmse'])
-
-    avg_rmse = nrmse_df_all.groupby(['name_dataset', 'variable'])['nrmse'].mean().reset_index()
+    avg_rmse = nrmse_df_all.groupby(['model', 'name_dataset', 'variable'])['nrmse'].mean().reset_index()
 
     return avg_rmse
 
 def get_sizes(database_size_path):
     query = "SELECT * FROM results"
-    db = pd.DataFrame(execute(query, database_size_path), columns=['name_dataset', 'window', 'total_chars', 'train_token_count', 'test_token_count', 'train_char_count', 'test_char_count'])
+    db = pd.DataFrame(execute(query, database_size_path), columns=['model', 'name_dataset', 'window', 'total_chars', 'train_token_count', 'test_token_count', 'train_char_count', 'test_char_count'])
     cols = ['total_chars', 'train_token_count', 'test_token_count', 'train_char_count', 'test_char_count']
-    avg_sizes = db.groupby('name_dataset')[cols].mean().reset_index()
+    avg_sizes = db.groupby(['model', 'name_dataset'])[cols].mean().reset_index()
 
     return avg_sizes
 

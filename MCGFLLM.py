@@ -50,7 +50,7 @@ def organize_graph(G, var_names, target):
     new_G.index = var_names
     return new_G.T.iloc[1:]
 
-def causal_graph(dataset, target, max_lags):
+def causal_graph(dataset, max_lags):
     
     dataset = simple_auto_stationarize(dataset)
     
@@ -79,6 +79,17 @@ def causal_graph(dataset, target, max_lags):
     
         
     return G_list
+
+def complete_graph(dataset, max_lags):
+
+    G_list = dict.fromkeys(list(dataset.columns.values), {})
+    
+    for var in G_list:
+        G = pd.DataFrame(True, index = np.arange(0,max_lags+1), columns = dataset.columns.values
+        G_list[var] = G.iloc[1:]
+
+    return G_list
+    
     
 class custom_Dataset(Dataset):
     def __init__(self, input_ids, attention_mask, labels):
@@ -118,7 +129,7 @@ def fuzzification(df, name_dataset, letter, partitions, partitioner = None):
     return pd.DataFrame(ts_fuzzy), ts.y, partitioner
 
 
-def causal_text(df, name_dataset, target, max_lags, tokenizer):
+def causal_text(df, name_dataset, max_lags, tokenizer):
 
     variables = df.columns.tolist()
 
@@ -127,7 +138,7 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
     labels_scaled = {}
     inputs = {}
     X_list, y_list = [], []
-    graph = causal_graph(df.head(2000), target=target, max_lags=max_lags)
+    graph = causal_graph(df.head(2000), max_lags=max_lags)
     arr = True
     for v in graph.keys():
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
@@ -160,14 +171,14 @@ def causal_text(df, name_dataset, target, max_lags, tokenizer):
 
     return custom_Dataset(input_tokens.input_ids, input_tokens.attention_mask, labels_scaled), scaler, tokenizer, inputs, graph
 
-def text(df, name_dataset, target, max_lags, tokenizer):
+def text(df, name_dataset, max_lags, tokenizer):
     variables = df.columns.tolist()
     scaler = {}
     labels_scaled = {}
     inputs = {}
     X_list, y_list = [], []
     # Complete graph generation
-    graph = feature_selection.complete_graph(df.head(2000), target=target, max_lags=max_lags)
+    graph = complete_graph(df.head(2000), max_lags=max_lags)
     arr = True
     for v in graph.keys():
       X, y_hat = util.organize_dataset(df, graph[v], max_lags, v)
@@ -216,7 +227,7 @@ def fuzzy_causal(df, name_dataset, target, max_lags, tokenizer, partitions):
     labels_scaled = {}
     inputs = {}
     X_list, y_list = [], []
-    graph = causal_graph(df.head(2000), target=target, max_lags=max_lags)
+    graph = causal_graph(df.head(2000), max_lags=max_lags)
     arr = True
     for v in graph.keys():
       X, y_hat = util.organize_dataset(data_fuzzy, graph[v], max_lags, v)

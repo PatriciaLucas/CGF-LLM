@@ -80,12 +80,12 @@ def causal_graph(dataset, max_lags):
         
     return G_list
 
-def complete_graph(dataset, max_lags):
+def complete_graph(dataset, target, max_lags):
 
     G_list = dict.fromkeys(list(dataset.columns.values), {})
     
     for var in G_list:
-        G = pd.DataFrame(True, index = np.arange(0,max_lags+1), columns = dataset.columns.values
+        G = pd.DataFrame(True, index = np.arange(0,max_lags+1), columns = dataset.columns.values)
         G_list[var] = G.iloc[1:]
 
     return G_list

@@ -17,3 +17,14 @@
 | WTH     | Weather                            | WetBulbFarenheit       | 35.065   | 10             | 1 h         |
 | ETT     | Electricity Transformer Temperature| OT                     | 69.680   | 7              | 15 min      |
 
+
+## EXPERIMENTS
+
+| Model          | Description                               | Database               | 
+|:--------------:|-------------------------------------------|:----------------------:|
+| CGFuzzy        | Causal Graph Fuzzy (MISO)                 | CGFuzzy.db             |
+| MCGFuzzy       | Multivariate Causal Graph Fuzzy (MIMO)    | MCGFuzzy.db            |
+| CGFLLM         | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy.db             |
+| MCGFLLM        | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy.db            |
+| CGFLLM Freeze  | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_Freeze.db      |
+| MCGFLLM Freeze | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_Freeze.db     |

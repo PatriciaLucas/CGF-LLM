@@ -28,3 +28,5 @@
 | MCGFLLM        | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy.db            |
 | CGFLLM Freeze  | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_Freeze.db      |
 | MCGFLLM Freeze | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_Freeze.db     |
+| CGFLLM LORA    | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_LORA.db        |
+| MCGFLLM LORA   | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_LORA.db       |

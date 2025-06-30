@@ -6,8 +6,6 @@ setuptools.setup(
     install_requires=[
           'numpy',
           'pandas',
-          'git+https://github.com/PatriciaLucas/AutoML.git',
-          'git+https://github.com/PYFTS/pyFTS',
           'torch'
           ],
     packages=find_packages(),

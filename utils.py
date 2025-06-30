@@ -21,6 +21,30 @@ def get_dataset(name):
     else:
         return "There is no dataset with that name."
 
+def dataframe_from_tuple(forecasts, real, model_name, name_dataset, i):
+    data_to_insert = []
+
+    # Suponha que forecasts e real tenham o mesmo shape e colunas
+    forecasts_melted = forecasts.reset_index().melt(id_vars='index', var_name='variable', value_name='forecast')
+    real_melted = real.reset_index().melt(id_vars='index', var_name='variable', value_name='real')
+
+    # Mesclar previsões e valores reais
+    df_combined = forecasts_melted.copy()
+    df_combined['real'] = real_melted['real']
+
+    # Adicionar as colunas fixas
+    df_combined['model'] = model_name
+    df_combined['dataset'] = name_dataset
+    df_combined['i'] = i
+
+    # Reordenar as colunas para combinar com o INSERT
+    df_final = df_combined[['model', 'dataset', 'i', 'variable', 'forecast', 'real']]
+
+    # Converter para lista de tuplas
+    data_to_insert = [tuple(x) for x in df_final.to_numpy()]
+
+    return data_to_insert
+
 
 def executemany(sql, forecasts, database_path):
     """

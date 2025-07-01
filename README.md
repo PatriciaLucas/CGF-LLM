@@ -24,9 +24,9 @@
 |:--------------:|-------------------------------------------|:----------------------:|
 | CGFuzzy        | Causal Graph Fuzzy (MISO)                 | CGFuzzy.db             |
 | MCGFuzzy       | Multivariate Causal Graph Fuzzy (MIMO)    | MCGFuzzy.db            |
-| CGFLLM         | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy.db             |
-| MCGFLLM        | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy.db            |
-| CGFLLM Freeze  | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_Freeze.db      |
-| MCGFLLM Freeze | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_Freeze.db     |
-| CGFLLM LORA    | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_LORA.db        |
-| MCGFLLM LORA   | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_LORA.db       |
+| CGFLLM         | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_metrics.db, CGFuzzy_size.db             |
+| MCGFLLM        | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFLLM_metrics.db, MCGFLLM_size.db            |
+| CGFLLM Freeze  | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_Freeze_metrics.db, CGFuzzy_Freeze_size.db      |
+| MCGFLLM Freeze | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_Freeze_metrics.db, MCGFuzzy_Freeze_size.db     |
+| CGFLLM LORA    | Causal Graph Fuzzy LLM (MISO)             | CGFuzzy_LORA_metrics.db, CGFuzzy_LORA_size.db        |
+| MCGFLLM LORA   | Multivariate Causal Graph Fuzzy LLM (MIMO)| MCGFuzzy_LORA_metrics.db, MCGFuzzy_LORA_size.db       |
